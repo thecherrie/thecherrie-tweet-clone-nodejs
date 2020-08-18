@@ -14,20 +14,10 @@
 <main role="main" class="flex-shrink-0">
   <div class="container">
 
-    <form method=""> <!-- tweet form -->
-      <div class="form-group">
-        <label for="exampleFormControlTextarea1"></label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="tweetText" placeholder="How're you feeling?"></textarea>
-        <a href="/login">
-          <button type="button" class="tweetclone-btn btn btn-warning" name="button">Sign in to post!</button>
-        </a>
-      </div>
-    </form>
-
     <% tweets.forEach(function(tweet) { %>
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">@cherrie</h5>
+          <h5 class="card-title">@<%= tweet.author %></h5>
           <h6 class="card-subtitle mb-2 text-muted"><%= tweet.date %></h6>
           <p class="card-text"><%= tweet.text %></p>
           <a href="#" class="card-link">Card link</a>

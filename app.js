@@ -34,6 +34,7 @@ app.get("/", function(req, res) {
 
     res.render('index.ejs', {
       tweets: foundTweet,
+      session: req.session
     });
   });
 });
@@ -44,21 +45,34 @@ app.get("/login", function(req, res) {
     console.log(foundTweet);
 
     res.render('login.ejs', {
+      isError: false,
+      session: req.session
     });
   });
 });
 
+app.get("/logout", function(req, res) {
+  req.session.destroy();
+  res.redirect("/")
+});
+
 app.get("/signup", function(req, res) {
-  res.render("signup");
+  res.render("signup", {
+    session: req.session
+  });
 });
 
 app.get("/compose", function(req, res) {
+  if(!req.session.user){
+    res.redirect("/login");
+  }
   Tweet.find({}, function(err, foundTweet) {
     console.log(foundTweet);
 
     res.render('compose.ejs', {
       tweets: foundTweet,
-      username: req.session.username
+      username: req.session.username,
+      session: req.session
     });
   });
 })
@@ -89,11 +103,18 @@ app.post("/login", function(req, res) {
     if(err){
       console.log(err);
     }else{
-      //USER LOGS IN!
-      console.log("Log in is good.");
-      req.session.username = username;
-      req.session.user = foundUser;
-      res.redirect("/dashboard");
+      if(!foundUser){
+        res.render("login", {
+          isError: true,
+          session: req.session
+        })
+      }else{
+        //USER LOGS IN!
+        console.log("Log in is good.");
+        req.session.username = username;
+        req.session.user = foundUser;
+        res.redirect("/dashboard");
+      }
     }
   });
 
