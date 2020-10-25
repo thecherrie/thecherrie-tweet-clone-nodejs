@@ -13,7 +13,7 @@ const User = require('./models/User');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
-app.use(session({secret: process.env.DB_SECRET,
+app.use(session({secret: "test",
   resave: false,
   saveUninitialized: true}));
 
