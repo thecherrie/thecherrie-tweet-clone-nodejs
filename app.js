@@ -13,13 +13,13 @@ const User = require('./models/User');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
-app.use(session({secret: "test",
+app.use(session({secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true}));
 
 app.set('view engine', 'ejs');
 
-mongoose.connect("mongodb://localhost:27017/tweetDB", {
+mongoose.connect(process.env.DB, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
