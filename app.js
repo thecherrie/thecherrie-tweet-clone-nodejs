@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -12,7 +13,7 @@ const User = require('./models/User');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
-app.use(session({secret:"secret-key-goes-here",
+app.use(session({secret: process.env.DB_SECRET,
   resave: false,
   saveUninitialized: true}));
 
@@ -23,8 +24,8 @@ mongoose.connect("mongodb://localhost:27017/tweetDB", {
   useUnifiedTopology: true
 });
 
-app.listen(3000, function() {
-  console.log("Started on port 3000.");
+app.listen(process.env.PORT || 3000, function() {
+  console.log(`Server started on port ${process.env.PORT}`);
 });
 
 app.get("/", function(req, res) {
@@ -131,6 +132,8 @@ app.get("/dashboard", function(req, res) {
 });
 
 app.post("/signup", function(req, res) {
+  console.log(`session = ${req.session}`);
+
   const username = req.body.usernameField;
   const password = req.body.passwordField;
 
@@ -139,8 +142,24 @@ app.post("/signup", function(req, res) {
     password: password
   });
 
-  newUser.save(function(err, user){
-    if (err) throw err;
-  });
+    req.session.user = newUser;
+    req.session.username = newUser.username;
+  //
+  //   Tweet.find({}, function(err, foundTweet) {
+  //
+  //     res.render('compose.ejs', {
+  //       tweets: foundTweet,
+  //       username: req.session.username,
+  //       session: req.session
+  //     });
+  //   });
+  // }
 
+  newUser.save(function(err, user){
+    if (err){
+      console.log(err);
+    }else{
+      res.redirect("/compose");
+    }
+  });
 });
