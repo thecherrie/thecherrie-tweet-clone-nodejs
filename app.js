@@ -24,7 +24,8 @@ mongoose.connect("mongodb://localhost:27017/tweetDB", {
   useUnifiedTopology: true
 });
 
-app.listen(process.env.PORT || 3000, function() {
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, function() {
   console.log(`Server started on port ${process.env.PORT}`);
 });
 
